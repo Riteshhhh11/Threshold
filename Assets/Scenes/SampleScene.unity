@@ -270,10 +270,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCamera
   cameraConfig:
-    mouseSensitivity: 2
+    mouseSensitivity: 10
     ClampPitchMin: -80
     ClampPitchMax: 80
-    currentPitch: 0
   mouseDelta: {x: 0, y: 0}
   currentPitch: 0
 --- !u!1 &410087039

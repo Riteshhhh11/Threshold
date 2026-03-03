@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.faaah.erroraudio": {
+      "version": "https://github.com/Pratik77221/FAAAH.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "b383a4f87400f238d2f56850fe2938c27237f94e"
+    },
     "com.unity.ai.navigation": {
       "version": "2.0.10",
       "depth": 0,

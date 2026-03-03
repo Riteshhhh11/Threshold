@@ -11,7 +11,7 @@ public class MovementConfig
     public float constGravity = -2f;
 
     [Header("Ground Check Settings")]
-    public float groundDistance;
+    //public float groundDistance;
     public float checkSphereRadius;
 
 }

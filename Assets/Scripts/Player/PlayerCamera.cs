@@ -32,7 +32,7 @@ public class PlayerCamera:MonoBehaviour
         mouseDelta = context.ReadValue<Vector2>();
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         Vector2 delta = mouseDelta; //Getting the mouse input this frame
         float horizontalRotation = delta.x * cameraConfig.mouseSensitivity * Time.deltaTime; //Calculating the horizontal rotation based on mouse input and multiplying by sensitivity to scale it and deltaTime for frame rate independence

@@ -25,7 +25,6 @@ public class PlayerMovement : MonoBehaviour
         PlayerController = GetComponent<CharacterController>();
         playerControls = new PlayerControls(); // Initialize the PlayerControls 
         CursorUtility.LockAndHideCursor();
-
     }
 
     private void OnEnable()
@@ -33,8 +32,7 @@ public class PlayerMovement : MonoBehaviour
         playerControls.Enable();
         playerControls.Player.Move.performed += OnMove;
         playerControls.Player.Move.canceled += OnMove;
-        playerControls.Player.Jump.performed += OnJump; //
-
+        playerControls.Player.Jump.performed += OnJump;
     }
 
     private void OnDisable()
@@ -44,7 +42,6 @@ public class PlayerMovement : MonoBehaviour
         playerControls.Player.Jump.performed -= OnJump;
         playerControls.Disable();
     }
-
     private void OnMove(InputAction.CallbackContext context) {
         moveInput = context.ReadValue<Vector2>();
     }
@@ -65,8 +62,8 @@ public class PlayerMovement : MonoBehaviour
         PlayerController.Move(velocity * Time.deltaTime);
     }
     private void HandleMovement() {
-        Vector3 move = new Vector3(moveInput.x, 0f, moveInput.y);
-        move = transform.TransformDirection(move);
+        Vector3 move = new Vector3(moveInput.x, 0f, moveInput.y); 
+        move = transform.TransformDirection(move); 
         move *= playerConfig.moveSpeed;
         velocity.x = move.x;
         velocity.z = move.z;
@@ -88,6 +85,7 @@ public class PlayerMovement : MonoBehaviour
             velocity.y += playerConfig.gravity * Time.deltaTime;
         }
     }
+    // For visualization and debugging purposes only.
     private void OnDrawGizmos()
     {
         if (playerConfig != null && SpherePosition != null) {
