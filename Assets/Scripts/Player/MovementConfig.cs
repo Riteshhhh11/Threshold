@@ -8,6 +8,7 @@ public class MovementConfig
 
     [Header("Gravity")]
     public float gravity = -20f;
+    public float constGravity = -2f;
 
     [Header("Ground Check Settings")]
     public float groundDistance;

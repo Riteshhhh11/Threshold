@@ -24,7 +24,8 @@ public class PlayerMovement : MonoBehaviour
     {
         PlayerController = GetComponent<CharacterController>();
         playerControls = new PlayerControls(); // Initialize the PlayerControls 
-        
+        CursorUtility.LockAndHideCursor();
+
     }
 
     private void OnEnable()
@@ -47,7 +48,7 @@ public class PlayerMovement : MonoBehaviour
     private void OnMove(InputAction.CallbackContext context) {
         moveInput = context.ReadValue<Vector2>();
     }
-    public void OnJump(InputAction.CallbackContext context)
+    private void OnJump(InputAction.CallbackContext context)
     {
         jumpInput = true; //intent only
     }
@@ -63,32 +64,30 @@ public class PlayerMovement : MonoBehaviour
         ApplyGravity();
         PlayerController.Move(velocity * Time.deltaTime);
     }
-    public void HandleMovement() {
+    private void HandleMovement() {
         Vector3 move = new Vector3(moveInput.x, 0f, moveInput.y);
         move = transform.TransformDirection(move);
         move *= playerConfig.moveSpeed;
         velocity.x = move.x;
         velocity.z = move.z;
     }
-    public void GroundCheck() {
+    private void GroundCheck() {
         isGrounded = Physics.CheckSphere(SpherePosition.position, playerConfig.checkSphereRadius, groundLayer);
         if (isGrounded && velocity.y < 0) {
-            velocity.y = -2f; 
+            velocity.y = playerConfig.constGravity; 
         }
     }
-    public void HandleJump() {
+    private void HandleJump() {
         if (jumpInput && isGrounded) {
             velocity.y = Mathf.Sqrt(playerConfig.jumpHeight * -2f * playerConfig.gravity);
             jumpInput = false; // Reset jump input after processing
         }
     }
-
-    public void ApplyGravity() {
+    private void ApplyGravity() {
         if (!isGrounded) {
             velocity.y += playerConfig.gravity * Time.deltaTime;
         }
     }
-  
     private void OnDrawGizmos()
     {
         if (playerConfig != null && SpherePosition != null) {
