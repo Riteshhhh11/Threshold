@@ -593,8 +593,7 @@ MonoBehaviour:
     moveSpeed: 5
     jumpHeight: 2
     gravity: -20
-    constGravity: -2
-    groundDistance: 0
+    constGravity: -1
     checkSphereRadius: 0.1
   SpherePosition: {fileID: 548583469}
   groundLayer:

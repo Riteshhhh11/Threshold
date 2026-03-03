@@ -16,7 +16,6 @@ public class PlayerMovement : MonoBehaviour
     [Header("Player Inputs")]
     [SerializeField] private Vector2 moveInput;
     [SerializeField] private Vector3 velocity;
-    [SerializeField] private bool jumpInput;
     [SerializeField] private bool isGrounded;
 
 
@@ -47,7 +46,7 @@ public class PlayerMovement : MonoBehaviour
     }
     private void OnJump(InputAction.CallbackContext context)
     {
-        jumpInput = true; //intent only
+        playerConfig.jumpBufferTimer = playerConfig.jumpBufferTime; 
     }
     public void Update()
     {
@@ -75,9 +74,14 @@ public class PlayerMovement : MonoBehaviour
         }
     }
     private void HandleJump() {
-        if (jumpInput && isGrounded) {
-            velocity.y = Mathf.Sqrt(playerConfig.jumpHeight * -2f * playerConfig.gravity);
-            jumpInput = false; // Reset jump input after processing
+        if (playerConfig.jumpBufferTimer > 0)
+        {
+            playerConfig.jumpBufferTimer -= Time.deltaTime;
+            if (isGrounded) 
+            {
+                velocity.y = Mathf.Sqrt(playerConfig.jumpHeight * -2f * playerConfig.gravity);
+                playerConfig.jumpBufferTimer = 0f;
+            }
         }
     }
     private void ApplyGravity() {
