@@ -34,16 +34,25 @@ public class PlayerCamera:MonoBehaviour
 
     private void LateUpdate()
     {
-        Vector2 delta = mouseDelta; //Getting the mouse input this frame
-        float horizontalRotation = delta.x * cameraConfig.mouseSensitivity * Time.deltaTime; //Calculating the horizontal rotation based on mouse input and multiplying by sensitivity to scale it and deltaTime for frame rate independence
-        float verticalRotation = delta.y * cameraConfig.mouseSensitivity * Time.deltaTime; //Calculating the vertical rotation based on mouse input and multiplying by sensitivity to scale it and deltaTime for frame rate independence
-        transform.parent.Rotate(0, horizontalRotation, 0); //Rotating the parent object (the player) horizontally based on the calculated horizontal rotation
+        //Raw delta input
+        float horizontalRotation = mouseDelta.x * cameraConfig.mouseSensitivity * Time.deltaTime; //Calculating the horizontal rotation based on mouse input and multiplying by sensitivity to scale it and deltaTime for frame rate independence
+        float verticalRotation = mouseDelta.y * cameraConfig.mouseSensitivity * Time.deltaTime; //Calculating the vertical rotation based on mouse input and multiplying by sensitivity to scale it and deltaTime for frame rate independence
+
+        //Accumulating the total rotation
+        cameraConfig.yaw += horizontalRotation;
         currentPitch -= verticalRotation;
         currentPitch = Mathf.Clamp(
             currentPitch,
             cameraConfig.ClampPitchMin,
             cameraConfig.ClampPitchMax
          );
-        transform.localRotation = Quaternion.Euler(currentPitch, 0, 0);
-    }   
+
+        //Target rotation from the accumulated rotation
+        Quaternion targetBodyRotation = Quaternion.Euler(0f, cameraConfig.yaw, 0);
+        Quaternion targetCameraRotaion = Quaternion.Euler(currentPitch, 0, 0);
+
+        //Slerp for smooth rotation 
+        transform.parent.rotation = Quaternion.Slerp(transform.parent.rotation, targetBodyRotation, cameraConfig.cameraSmoothing * Time.deltaTime);
+        transform.localRotation = Quaternion.Slerp(transform.localRotation, targetCameraRotaion, cameraConfig.cameraSmoothing * Time.deltaTime);
+    }
 }
