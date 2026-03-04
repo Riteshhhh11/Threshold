@@ -13,7 +13,6 @@ public class PlayerCamera:MonoBehaviour
     {
         playerControls = new PlayerControls();
     }
-
     private void OnEnable()
     {
         playerControls.Enable();
@@ -50,6 +49,8 @@ public class PlayerCamera:MonoBehaviour
         //Target rotation from the accumulated rotation
         Quaternion targetBodyRotation = Quaternion.Euler(0f, cameraConfig.yaw, 0);
         Quaternion targetCameraRotaion = Quaternion.Euler(currentPitch, 0, 0);
+        Debug.Log("Target Body Rotation: " + targetBodyRotation.eulerAngles);
+        Debug.Log("Target Camera Rotation: " + targetCameraRotaion.eulerAngles);
 
         //Slerp for smooth rotation 
         transform.parent.rotation = Quaternion.Slerp(transform.parent.rotation, targetBodyRotation, cameraConfig.cameraSmoothing * Time.deltaTime);
