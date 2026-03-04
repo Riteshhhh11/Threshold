@@ -60,7 +60,6 @@ public class PlayerMovement : MonoBehaviour
     {
         GroundCheck();
         HandleJump();
-        if(isSprinting) Debug.Log("Sprinting: " + isSprinting);
     }
 
     private void FixedUpdate()
@@ -101,15 +100,6 @@ public class PlayerMovement : MonoBehaviour
             velocity.y += playerConfig.gravity * Time.deltaTime;
         }
     }
-
-    //public Vector3 GetHorizontalVelocity(float desiredSpeed) {
-    //    Vector3 inputDirection = new Vector3(moveInput.x, 0, moveInput.y);
-    //    if (inputDirection.sqrMagnitude < 0.01f) {
-    //        return Vector3.zero;
-    //    }
-    //    inputDirection = transform.TransformDirection(inputDirection.normalized);
-    //    return inputDirection * desiredSpeed;
-    //}
     // For visualization and debugging purposes only.
     private void OnDrawGizmos()
     {
