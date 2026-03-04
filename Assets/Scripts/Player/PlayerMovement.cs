@@ -7,17 +7,17 @@ public class PlayerMovement : MonoBehaviour
     [Header("Player Assets")]
     [SerializeField] private CharacterController PlayerController;
     [SerializeField] private PlayerControls playerControls;
-    [SerializeField] private MovementConfig playerConfig;
+    [SerializeField] public MovementConfig playerConfig;
 
     [Header("Ground Check")]
     [SerializeField] private Transform SpherePosition;
     [SerializeField] private LayerMask groundLayer;
 
     [Header("Player Inputs")]
-    [SerializeField] private Vector2 moveInput;
+    [SerializeField] public Vector2 moveInput;
     [SerializeField] private Vector3 velocity;
-    [SerializeField] private bool isGrounded;
-
+    [SerializeField] public bool isGrounded;
+    [SerializeField] public bool isSprinting;
 
     private void Awake()
     {
@@ -32,6 +32,8 @@ public class PlayerMovement : MonoBehaviour
         playerControls.Player.Move.performed += OnMove;
         playerControls.Player.Move.canceled += OnMove;
         playerControls.Player.Jump.performed += OnJump;
+        playerControls.Player.Sprint.performed += OnSprint;
+        playerControls.Player.Sprint.canceled += OnSprint;
     }
 
     private void OnDisable()
@@ -39,6 +41,8 @@ public class PlayerMovement : MonoBehaviour
         playerControls.Player.Move.performed -= OnMove;
         playerControls.Player.Move.canceled -= OnMove;
         playerControls.Player.Jump.performed -= OnJump;
+        playerControls.Player.Sprint.performed -= OnSprint;
+        playerControls.Player.Sprint.canceled -= OnSprint;
         playerControls.Disable();
     }
     private void OnMove(InputAction.CallbackContext context) {
@@ -48,11 +52,15 @@ public class PlayerMovement : MonoBehaviour
     {
         playerConfig.jumpBufferTimer = playerConfig.jumpBufferTime; 
     }
+    private void OnSprint(InputAction.CallbackContext context) {
+        bool newValue = context.ReadValueAsButton();
+        isSprinting = newValue;
+    }
     public void Update()
     {
         GroundCheck();
-        HandleMovement();
         HandleJump();
+        if(isSprinting) Debug.Log("Sprinting: " + isSprinting);
     }
 
     private void FixedUpdate()
@@ -60,10 +68,10 @@ public class PlayerMovement : MonoBehaviour
         ApplyGravity();
         PlayerController.Move(velocity * Time.deltaTime);
     }
-    private void HandleMovement() {
+    public void HandleMovement(float desiredSpeed) {
         Vector3 move = new Vector3(moveInput.x, 0f, moveInput.y); 
         move = transform.TransformDirection(move); 
-        move *= playerConfig.moveSpeed;
+        move *= desiredSpeed;
         velocity.x = move.x;
         velocity.z = move.z;
     }
@@ -73,7 +81,7 @@ public class PlayerMovement : MonoBehaviour
             velocity.y = playerConfig.constGravity; 
         }
     }
-    private void HandleJump() {
+    public void HandleJump() {
         if (playerConfig.jumpBufferTimer > 0)
         {
             playerConfig.jumpBufferTimer -= Time.deltaTime;
@@ -81,14 +89,27 @@ public class PlayerMovement : MonoBehaviour
             {
                 velocity.y = Mathf.Sqrt(playerConfig.jumpHeight * -2f * playerConfig.gravity);
                 playerConfig.jumpBufferTimer = 0f;
+
+                if (!isGrounded) {
+                    isSprinting = false;
+                }
             }
         }
     }
-    private void ApplyGravity() {
+    public void ApplyGravity() {
         if (!isGrounded) {
             velocity.y += playerConfig.gravity * Time.deltaTime;
         }
     }
+
+    //public Vector3 GetHorizontalVelocity(float desiredSpeed) {
+    //    Vector3 inputDirection = new Vector3(moveInput.x, 0, moveInput.y);
+    //    if (inputDirection.sqrMagnitude < 0.01f) {
+    //        return Vector3.zero;
+    //    }
+    //    inputDirection = transform.TransformDirection(inputDirection.normalized);
+    //    return inputDirection * desiredSpeed;
+    //}
     // For visualization and debugging purposes only.
     private void OnDrawGizmos()
     {
