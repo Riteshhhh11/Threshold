@@ -13,14 +13,14 @@ public sealed class PlayerAirborneState : IState
         _playerStateMachine = playerStateMachine;
     }
     public void Enter() {
-        Debug.Log("Entered Falling State");
+        //Debug.Log("Entered Falling State");
     }
 
     public void Tick() {
         //Falling needs gravity to be applied in every frame so the player can fall down.
         _player.ApplyGravity();
         //Apply AirControl when the player is falling so the player can control their movement in the air.
-        float airSpeed = _player.playerConfig.moveSpeed * _player.playerConfig.AirControlFactor;
+        float airSpeed = _player.playerConfig.moveSpeed * _player.playerConfig.airControlFactor;
         _player.HandleMovement(airSpeed);
         //Transition to the landing state when the player is grounded again.
         if (_player.isGrounded)
@@ -48,6 +48,6 @@ public sealed class PlayerAirborneState : IState
     }
 
     public void Exit() {
-        Debug.Log("Exited Falling State");
+        //Debug.Log("Exited Falling State");
     }
 }

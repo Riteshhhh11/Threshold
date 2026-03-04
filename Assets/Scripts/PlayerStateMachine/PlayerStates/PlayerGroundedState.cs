@@ -15,7 +15,7 @@ public sealed class PlayerGroundedState : IState
     }
 
     public void Enter() {
-       Debug.Log("Entered Grounded State");
+       //Debug.Log("Entered Grounded State");
     }
 
     public void Tick() {
@@ -37,6 +37,6 @@ public sealed class PlayerGroundedState : IState
         }
     }
     public void Exit() {
-        Debug.Log("Exited Grounded State");
+        //Debug.Log("Exited Grounded State");
     }
 }

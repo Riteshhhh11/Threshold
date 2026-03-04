@@ -8,7 +8,9 @@ public class MovementConfig
     public float jumpHeight = 2f;
     public float jumpBufferTime = 0.05f;
     public float jumpBufferTimer = 0f;
-    public float AirControlFactor = 0.4f;
+    public float airControlFactor = 0.4f;
+    public float smoothGroundMovement = 0.12f;
+    public float smoothAirMovement = 0.25f;
 
     [Header("Gravity")]
     public float gravity = -20f;
