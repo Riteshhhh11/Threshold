@@ -63,6 +63,8 @@ public class PlayerMovement : MonoBehaviour
     {
         GroundCheck();
         HandleJump();
+        ResetVelocity();
+
     }
 
     private void LateUpdate() //IDK why but this fixed 99% of the jitter effect on the objects.
@@ -77,7 +79,7 @@ public class PlayerMovement : MonoBehaviour
         Vector3 inputDirection = new Vector3(moveInput.x, 0f, moveInput.y); 
         inputDirection = transform.TransformDirection(inputDirection);
         Vector3 targetHorizontalVelocity = inputDirection * desiredSpeed; //storing the scaled speed from the input into targetHorizontalVelocity (from 0 to 5, 5 is the walking speed).
-        Debug.Log($"Target horizontal velocity before smoothing: {targetHorizontalVelocity}");
+        //Debug.Log($"Target horizontal velocity before smoothing: {targetHorizontalVelocity}");
         float smoothTime = isGrounded ? playerConfig.smoothGroundMovement : playerConfig.smoothAirMovement; //decides the smoothing factor based on the player's state.
         //Parameters explained:
         //   1. current value          → horizontalVelocity (where we are now)
@@ -90,11 +92,11 @@ public class PlayerMovement : MonoBehaviour
                 ref horizontalVelocityRef, //ref keyword passes the variable by reference.
                 smoothTime //smoothing factor that determines the time it takes to reach the target velocity.
             );
-        Debug.Log($"Smoothed horizontal velocity after vector3.SmoothDamp {horizontalVelocity}");
-        velocity.x = horizontalVelocity.x;
+        //Debug.Log($"Smoothed horizontal velocity after vector3.SmoothDamp {horizontalVelocity}");
+        velocity.x = horizontalVelocity.x; 
         velocity.z = horizontalVelocity.z;
-        Debug.Log($"smooth velocity on x: {velocity.x}");
-        Debug.Log($"smooth velocity on y: {velocity.z}");
+        //Debug.Log($"smooth velocity on x: {velocity.x}");
+        //Debug.Log($"smooth velocity on y: {velocity.z}");
         
     }
     private void GroundCheck() {
@@ -121,6 +123,12 @@ public class PlayerMovement : MonoBehaviour
     public void ApplyGravity() {
         if (!isGrounded) {
             velocity.y += playerConfig.gravity * Time.deltaTime;
+        }
+    }
+    public void ResetVelocity() {
+        if ((PlayerController.collisionFlags & CollisionFlags.Above) != 0) {
+            velocity.y = 0f * Time.deltaTime;
+            Debug.Log("Head hit detected, resetting vertical velocity to 0.");
         }
     }
     // For visualization and debugging purposes only.
