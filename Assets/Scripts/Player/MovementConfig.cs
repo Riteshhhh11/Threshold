@@ -18,6 +18,11 @@ public class MovementConfig
 
     [Header("Ground Check Settings")]
     //public float groundDistance;
-    public float checkSphereRadius;
+    public float groundcheckSphereRadius;
+
+    [Header("Ceiling Check Settings")]
+    public float ceilingcheckSphereRadius;
+
+
 
 }

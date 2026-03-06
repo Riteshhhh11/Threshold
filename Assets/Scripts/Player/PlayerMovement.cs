@@ -10,13 +10,18 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] public MovementConfig playerConfig;
 
     [Header("Ground Check")]
-    [SerializeField] private Transform SpherePosition;
+    [SerializeField] private Transform groundSpherePosition;
     [SerializeField] private LayerMask groundLayer;
+    [SerializeField] public bool isGrounded;
+
+    [Header("Ceiling Check")]
+    [SerializeField] private Transform ceilingSpherePosition;
+    [SerializeField] private LayerMask ceilingLayer;
+    [SerializeField] public bool isCeilinged;
 
     [Header("Player Inputs")]
     [SerializeField] public Vector2 moveInput;
     [SerializeField] private Vector3 velocity;
-    [SerializeField] public bool isGrounded;
     [SerializeField] public bool isSprinting;
     [SerializeField] private Vector3 horizontalVelocity; //will hold current smooth horizontal velocity
     [SerializeField] private Vector3 horizontalVelocityRef; //will hold the current vertical velocity 
@@ -62,11 +67,9 @@ public class PlayerMovement : MonoBehaviour
     public void Update()
     {
         GroundCheck();
+        CeilingCheck();
         HandleJump();
-        ResetVelocity();
-
     }
-
     private void LateUpdate() //IDK why but this fixed 99% of the jitter effect on the objects.
     {
         PlayerController.Move(velocity * Time.deltaTime);
@@ -97,12 +100,18 @@ public class PlayerMovement : MonoBehaviour
         velocity.z = horizontalVelocity.z;
         //Debug.Log($"smooth velocity on x: {velocity.x}");
         //Debug.Log($"smooth velocity on y: {velocity.z}");
-        
     }
     private void GroundCheck() {
-        isGrounded = Physics.CheckSphere(SpherePosition.position, playerConfig.checkSphereRadius, groundLayer);
+        isGrounded = Physics.CheckSphere(groundSpherePosition.position, playerConfig.groundcheckSphereRadius, groundLayer);
         if (isGrounded && velocity.y < 0) {
             velocity.y = playerConfig.constGravity; 
+        }
+    }
+
+    private void CeilingCheck() {
+        isCeilinged = Physics.CheckSphere(ceilingSpherePosition.position, playerConfig.ceilingcheckSphereRadius, ceilingLayer);
+        if (isCeilinged && velocity.y > 0) {
+            velocity.y = 0;
         }
     }
     public void HandleJump() {
@@ -125,18 +134,14 @@ public class PlayerMovement : MonoBehaviour
             velocity.y += playerConfig.gravity * Time.deltaTime;
         }
     }
-    public void ResetVelocity() {
-        if ((PlayerController.collisionFlags & CollisionFlags.Above) != 0) {
-            velocity.y = 0f * Time.deltaTime;
-            Debug.Log("Head hit detected, resetting vertical velocity to 0.");
-        }
-    }
     // For visualization and debugging purposes only.
     private void OnDrawGizmos()
     {
-        if (playerConfig != null && SpherePosition != null) {
+        if (playerConfig != null && groundSpherePosition != null && ceilingSpherePosition != null) {
             Gizmos.color = isGrounded ? Color.green : Color.red;
-            Gizmos.DrawWireSphere(SpherePosition.position, playerConfig.checkSphereRadius);
+            Gizmos.DrawWireSphere(groundSpherePosition.position, playerConfig.groundcheckSphereRadius);
+            Gizmos.color = isCeilinged ? Color.green : Color.red;
+            Gizmos.DrawWireSphere(ceilingSpherePosition.position, playerConfig.ceilingcheckSphereRadius);
         }
     }
 }
