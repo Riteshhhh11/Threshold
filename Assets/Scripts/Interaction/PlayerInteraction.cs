@@ -10,7 +10,7 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] private TextMeshProUGUI PromptUI;
 
     private PlayerControls playerControls;
-    private IInteractable currentTarget;
+    private IInteractable currentTarget; 
     private Camera playerCamera;
 
     private void Awake()
@@ -32,45 +32,43 @@ public class PlayerInteraction : MonoBehaviour
     }
     private void OnInteract(InputAction.CallbackContext context)
     {
-        Debug.Log("Interact button pressed");
         if (currentTarget != null) {
-            Debug.Log("Calling Interact()");
             currentTarget.Interact();
-            Debug.Log($"Interacted with {currentTarget}");
-            if (PromptUI != null) {
-                PromptUI.gameObject.SetActive(false);
-            }
         }
-        else
-        {
-            Debug.Log("E not pressed");
-        }
+       
     }
     private void Update()
     {
         currentTarget = null; //reset target each frame
+
         Ray ray = playerCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0)); //center of screen
 
         if (Physics.Raycast(ray, out RaycastHit hit, interactionRange, interactableLayer))
         {
             Debug.DrawRay(ray.origin, ray.direction * hit.distance, Color.green);
-            currentTarget = hit.collider.GetComponent<IInteractable>();
-            //Debug.Log("IInteractable found " + (currentTarget != null ? "Yes" : "No"));
-            if (currentTarget != null &&
-                Vector3.Distance(transform.position, hit.point) <= currentTarget.InteractionRange &&
-                currentTarget.canInteract())
-            {
-                if (PromptUI != null) {
+            IInteractable interactable = hit.collider.GetComponentInParent<IInteractable>();
+
+            if (interactable != null) { 
+                currentTarget = interactable;
+                float distanceToHit = Vector3.Distance(transform.position, hit.point);
+                if (PromptUI != null)
+                {
                     PromptUI.text = currentTarget.GetPrompt();
+                    PromptUI.color = currentTarget.canInteract()? Color.red : Color.red; // Gray out prompt if interaction is not possible
                     PromptUI.gameObject.SetActive(true);
+                    //Debug.Log($"Prompt displayed: {currentTarget.GetPrompt()}");
                 }
                 return;
             }
         }
-        Debug.DrawRay(ray.origin, ray.direction * interactionRange, Color.red);
-        if (PromptUI != null) {
-            PromptUI.gameObject.SetActive(false);
+        else{
+            Debug.DrawRay(ray.origin, ray.direction * interactionRange, Color.red);
+            if (PromptUI != null)
+            {
+                PromptUI.gameObject.SetActive(false);
+            }
         }
+        
     }
 }
     
