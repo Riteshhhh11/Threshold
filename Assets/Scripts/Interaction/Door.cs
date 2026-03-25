@@ -6,7 +6,7 @@ public class Door : MonoBehaviour, IInteractable
     public float interactionRange = 3f;
     private bool isOpen = false;
     public float doorOpenAngle = 90f; // Angle to open the door
-    public float doorCloseAngle = 0f; // Angle to close the door
+    public float doorCloseAngle = -90f; // Angle to close the door
 
     public float InteractionRange => interactionRange;
 
@@ -43,9 +43,9 @@ public class Door : MonoBehaviour, IInteractable
     private System.Collections.IEnumerator RotateDoor(float angle) {
         Debug.Log($"Rotating door by {angle} degrees");
         Quaternion StartingDoorRotation = transform.rotation;
-        Quaternion TargetDoorRotation = StartingDoorRotation * quaternion.Euler(0, angle, 0);
+        Quaternion TargetDoorRotation = StartingDoorRotation * quaternion.Euler(0, 0, angle);
         float time = 0f;
-        float duration = 0.6f;
+        float duration = 1f;
         while (time < duration) {
             time += Time.deltaTime;
             float t = time / duration;

@@ -46,7 +46,10 @@ public class PlayerInteraction : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit, interactionRange, interactableLayer))
         {
             Debug.DrawRay(ray.origin, ray.direction * hit.distance, Color.green);
-            IInteractable interactable = hit.collider.GetComponentInParent<IInteractable>();
+            IInteractable interactable = hit.collider.GetComponent<IInteractable>();
+            if (interactable == null) {
+                Debug.LogWarning("Hit object does not have an IInteractable component: " + hit.collider.gameObject.name);
+            }    
 
             if (interactable != null) { 
                 currentTarget = interactable;
