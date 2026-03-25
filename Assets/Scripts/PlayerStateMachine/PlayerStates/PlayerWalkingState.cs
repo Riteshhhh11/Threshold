@@ -15,17 +15,13 @@ public sealed class PlayerWalkingState: IState
     }
 
     public void Enter() {
-        //Debug.Log("Entered Walking State");
+        _playerMovement.StateText.text = "Player State: Walking State";
     }
     public void Tick() {
         float walkingSpeed = _playerMovement.playerConfig.moveSpeed;
         _playerMovement.HandleMovement(walkingSpeed);
 
-        if (!_playerMovement.isGrounded)
-        {
-            _stateMachine.ChangeState(_playerStateMachine.fallingState);
-        }
-        else if (_playerMovement.moveInput == Vector2.zero)
+        if (_playerMovement.moveInput == Vector2.zero)
         {
             _stateMachine.ChangeState(_playerStateMachine.groundedState);
         }

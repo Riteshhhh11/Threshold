@@ -31,6 +31,7 @@ public sealed class PlayerStateMachine : MonoBehaviour
     }
     public void Update()
     {
+        _playerMovement.GroundCheck();
         _stateMachine.Tick(); //Runs the currentState every frame
     }
 }

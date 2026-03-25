@@ -1,4 +1,5 @@
-﻿using Unity.VisualScripting;
+﻿using TMPro;
+using Unity.VisualScripting;
 using UnityEditor.Networking.PlayerConnection;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -8,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private CharacterController PlayerController;
     [SerializeField] private PlayerControls playerControls;
     [SerializeField] public MovementConfig playerConfig;
+    [SerializeField] public TextMeshProUGUI StateText;
 
     [Header("Ground Check")]
     [SerializeField] private Transform groundSpherePosition;
@@ -21,7 +23,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Player Inputs")]
     [SerializeField] public Vector2 moveInput;
-    [SerializeField] private Vector3 velocity;
+    [SerializeField] public Vector3 velocity;
     [SerializeField] public bool isSprinting;
     [SerializeField] private Vector3 horizontalVelocity; //will hold current smooth horizontal velocity
     [SerializeField] private Vector3 horizontalVelocityRef; //will hold the current vertical velocity 
@@ -66,7 +68,6 @@ public class PlayerMovement : MonoBehaviour
     }
     public void Update()
     {
-        GroundCheck();
         CeilingCheck();
         HandleJump();
     }
@@ -101,7 +102,7 @@ public class PlayerMovement : MonoBehaviour
         //Debug.Log($"smooth velocity on x: {velocity.x}");
         //Debug.Log($"smooth velocity on y: {velocity.z}");
     }
-    private void GroundCheck() {
+    public void GroundCheck() {
         isGrounded = Physics.CheckSphere(groundSpherePosition.position, playerConfig.groundcheckSphereRadius, groundLayer);
         if (isGrounded && velocity.y < 0) {
             velocity.y = playerConfig.constGravity; 
