@@ -15,7 +15,14 @@ public sealed class PlayerGroundedState : IState
     }
 
     public void Enter() {
+<<<<<<< HEAD
         _playerMovement.playerStateText.SetText("player State: Grounded");
+=======
+        _playerMovement.StateText.text = "Player State: Grounded State";
+        if (_playerMovement.velocity.y < 0) {
+            _playerMovement.velocity.y = _playerMovement.playerConfig.constGravity; //reset the vertical velocity to 0 when we land on the ground to prevent the player from sticking to the ground or bouncing up and down when landing.
+        }
+>>>>>>> bcdbe6d9a97aeb55bd7a9936617f606852fc5bd2
     }
 
     public void Tick() {
@@ -24,16 +31,18 @@ public sealed class PlayerGroundedState : IState
 
         if (!_playerMovement.isGrounded) {
             _stateMachine.ChangeState(_playerStateMachine.fallingState);
+            return;
         }
-        else if (_playerMovement.moveInput != Vector2.zero)
+        if (_playerMovement.moveInput == Vector2.zero)
         {
-            if (_playerMovement.isSprinting) {
-                _stateMachine.ChangeState(_playerStateMachine.sprintingState);
-            }
-            else
-            {
-                _stateMachine.ChangeState(_playerStateMachine.walkingState);
-            }
+            _playerMovement.StateText.text = "Player State: Grounded State";
+        }
+        else if (_playerMovement.isSprinting) {
+            _stateMachine.ChangeState(_playerStateMachine.sprintingState);
+        }
+        else
+        {
+            _stateMachine.ChangeState(_playerStateMachine.walkingState);
         }
     }
     public void Exit() {

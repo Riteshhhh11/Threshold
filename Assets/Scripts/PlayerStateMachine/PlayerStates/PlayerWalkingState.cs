@@ -15,17 +15,17 @@ public sealed class PlayerWalkingState: IState
     }
 
     public void Enter() {
+<<<<<<< HEAD
         _playerMovement.playerStateText.SetText("player State: Walking");
+=======
+        _playerMovement.StateText.text = "Player State: Walking State";
+>>>>>>> bcdbe6d9a97aeb55bd7a9936617f606852fc5bd2
     }
     public void Tick() {
         float walkingSpeed = _playerMovement.playerConfig.moveSpeed;
         _playerMovement.HandleMovement(walkingSpeed);
 
-        if (!_playerMovement.isGrounded)
-        {
-            _stateMachine.ChangeState(_playerStateMachine.fallingState);
-        }
-        else if (_playerMovement.moveInput == Vector2.zero)
+        if (_playerMovement.moveInput == Vector2.zero)
         {
             _stateMachine.ChangeState(_playerStateMachine.groundedState);
         }

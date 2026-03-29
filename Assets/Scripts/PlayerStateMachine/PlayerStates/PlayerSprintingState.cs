@@ -15,17 +15,17 @@ public sealed class PlayerSprintingState : IState
     }
 
     public void Enter() {
+<<<<<<< HEAD
         _playerMovement.playerStateText.SetText("player State: Sprinting");
+=======
+        _playerMovement.StateText.text = "Player State: Sprinting State";
+>>>>>>> bcdbe6d9a97aeb55bd7a9936617f606852fc5bd2
     }
 
     public void Tick() {
         float sprintSpeed = _playerMovement.playerConfig.sprintSpeed;
         _playerMovement.HandleMovement(sprintSpeed);
-        if (!_playerMovement.isGrounded)
-        {
-            _stateMachine.ChangeState(_playerStateMachine.fallingState);
-        }
-        else if (_playerMovement.moveInput == Vector2.zero)
+        if (_playerMovement.moveInput == Vector2.zero)
         {
             _stateMachine.ChangeState(_playerStateMachine.groundedState);
         }

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public sealed class PlayerAirborneState : IState
 {
@@ -13,10 +13,14 @@ public sealed class PlayerAirborneState : IState
         _playerStateMachine = playerStateMachine;
     }
     public void Enter() {
+<<<<<<< HEAD
         _player.playerStateText.SetText("player State: Airborne");
+=======
+        _player.StateText.text = "Player State: Falling State";
+>>>>>>> bcdbe6d9a97aeb55bd7a9936617f606852fc5bd2
     }
 
-    public void Tick() {
+    public void Tick() { 
         //Falling needs gravity to be applied in every frame so the player can fall down.
         _player.ApplyGravity();
         //Apply AirControl when the player is falling so the player can control their movement in the air.
@@ -25,6 +29,7 @@ public sealed class PlayerAirborneState : IState
         //Transition to the landing state when the player is grounded again.
         if (_player.isGrounded)
         {
+<<<<<<< HEAD
             if (_player.moveInput == Vector2.zero)
             {
                 _stateMachine.ChangeState(_playerStateMachine.groundedState);
@@ -40,6 +45,25 @@ public sealed class PlayerAirborneState : IState
             }
         }
 
+=======
+            //// We just landed this frame → decide next grounded state
+            //if (_player.moveInput == Vector2.zero)
+            //{
+            //    _stateMachine.ChangeState(_playerStateMachine.groundedState);
+            //}
+            //else if (_player.isSprinting)
+            //{
+            //    _stateMachine.ChangeState(_playerStateMachine.sprintingState);
+            //}
+            //else
+            //{
+            //    _stateMachine.ChangeState(_playerStateMachine.walkingState);
+            //}
+            if (_player.isGrounded) {
+                _stateMachine.ChangeState(_playerStateMachine.groundedState);
+            }
+        }
+>>>>>>> bcdbe6d9a97aeb55bd7a9936617f606852fc5bd2
     }
     public void Exit() {
         //Debug.Log("Exited Falling State");
