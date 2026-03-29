@@ -15,7 +15,7 @@ public sealed class PlayerGroundedState : IState
     }
 
     public void Enter() {
-       //Debug.Log("Entered Grounded State");
+        _playerMovement.playerStateText.SetText("player State: Grounded");
     }
 
     public void Tick() {

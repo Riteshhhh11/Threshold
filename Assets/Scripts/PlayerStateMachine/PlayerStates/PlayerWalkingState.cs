@@ -15,7 +15,7 @@ public sealed class PlayerWalkingState: IState
     }
 
     public void Enter() {
-        //Debug.Log("Entered Walking State");
+        _playerMovement.playerStateText.SetText("player State: Walking");
     }
     public void Tick() {
         float walkingSpeed = _playerMovement.playerConfig.moveSpeed;

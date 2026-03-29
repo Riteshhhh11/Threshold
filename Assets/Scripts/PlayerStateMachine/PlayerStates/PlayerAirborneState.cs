@@ -13,7 +13,7 @@ public sealed class PlayerAirborneState : IState
         _playerStateMachine = playerStateMachine;
     }
     public void Enter() {
-        //Debug.Log("Entered Falling State");
+        _player.playerStateText.SetText("player State: Airborne");
     }
 
     public void Tick() {
@@ -27,26 +27,20 @@ public sealed class PlayerAirborneState : IState
         {
             if (_player.moveInput == Vector2.zero)
             {
+                _stateMachine.ChangeState(_playerStateMachine.groundedState);
+            }
+            else {
                 if (_player.isSprinting)
                 {
                     _stateMachine.ChangeState(_playerStateMachine.sprintingState);
                 }
-                else
-                {
+                else { 
                     _stateMachine.ChangeState(_playerStateMachine.walkingState);
                 }
             }
-            else
-            {
-                _stateMachine.ChangeState(_playerStateMachine.walkingState);
-            }
-        }
-        else {
-            _stateMachine.ChangeState(_playerStateMachine.groundedState);
         }
 
     }
-
     public void Exit() {
         //Debug.Log("Exited Falling State");
     }

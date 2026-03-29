@@ -2,12 +2,18 @@
 using UnityEditor.Networking.PlayerConnection;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TMPro;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Player Assets")]
     [SerializeField] private CharacterController PlayerController;
     [SerializeField] private PlayerControls playerControls;
     [SerializeField] public MovementConfig playerConfig;
+    [SerializeField] public TextMeshProUGUI playerStateText;
+    [SerializeField] public TextMeshProUGUI playerVelocityXText;
+    [SerializeField] public TextMeshProUGUI playerVelocityZText;
+    [SerializeField] public TextMeshProUGUI playerVelocityYText;
+
 
     [Header("Ground Check")]
     [SerializeField] private Transform groundSpherePosition;
@@ -98,6 +104,12 @@ public class PlayerMovement : MonoBehaviour
         //Debug.Log($"Smoothed horizontal velocity after vector3.SmoothDamp {horizontalVelocity}");
         velocity.x = horizontalVelocity.x; 
         velocity.z = horizontalVelocity.z;
+
+        //Tracking player state and velocity for debugging purposes.
+        playerVelocityXText.SetText($"Velocity X: {velocity.x}"); 
+        playerVelocityZText.SetText($"Velocity Z: {velocity.z}");
+        playerVelocityYText.SetText($"Velocity Y: {velocity.y}");
+
         //Debug.Log($"smooth velocity on x: {velocity.x}");
         //Debug.Log($"smooth velocity on y: {velocity.z}");
     }
@@ -115,7 +127,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
     public void HandleJump() {
-        if (playerConfig.jumpBufferTimer > 0)
+        if (playerConfig.jumpBufferTimer > 0) 
         {
             playerConfig.jumpBufferTimer -= Time.deltaTime;
             if (isGrounded) 

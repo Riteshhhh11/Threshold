@@ -15,7 +15,7 @@ public sealed class PlayerSprintingState : IState
     }
 
     public void Enter() {
-        //Debug.Log("Entered Sprinting State");
+        _playerMovement.playerStateText.SetText("player State: Sprinting");
     }
 
     public void Tick() {
