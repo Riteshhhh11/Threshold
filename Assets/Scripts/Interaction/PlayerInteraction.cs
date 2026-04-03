@@ -20,6 +20,7 @@ public class PlayerInteraction : MonoBehaviour
         playerCamera = Camera.main;
         PromptUI.gameObject.SetActive(false);
         PlayerInteraction.Instance = this;
+        Debug.Log("PlayerInteraction instance created");
     }
 
     private void OnEnable()
