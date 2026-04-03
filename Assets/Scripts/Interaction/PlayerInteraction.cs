@@ -1,23 +1,25 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Scripting;
 
 public class PlayerInteraction : MonoBehaviour
 {
     [SerializeField] private float interactionRange = 3f;
-    [SerializeField] private LayerMask interactableLayer = 1 << 6;
+    [SerializeField] private LayerMask interactableLayer = 1 << 7; 
     [SerializeField] private TextMeshProUGUI PromptUI;
 
     private PlayerControls playerControls;
     private IInteractable currentTarget; 
     private Camera playerCamera;
 
+    public static PlayerInteraction Instance { get; private set; }
+
     private void Awake()
     {
         playerControls = new PlayerControls();
         playerCamera = Camera.main;
         PromptUI.gameObject.SetActive(false);
+        PlayerInteraction.Instance = this;
     }
 
     private void OnEnable()
