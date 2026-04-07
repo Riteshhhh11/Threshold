@@ -7,10 +7,12 @@ public class PlayerCamera:MonoBehaviour
     [SerializeField] PlayerControls playerControls;
     [SerializeField] private Vector2 mouseDelta;
     [SerializeField] public float currentPitch;
+    [SerializeField] public bool allowCameraInput = true;
 
 
     private void Awake()
     {
+        allowCameraInput = true;
         playerControls = new PlayerControls();
     }
     private void OnEnable()
@@ -33,6 +35,12 @@ public class PlayerCamera:MonoBehaviour
 
     private void LateUpdate()
     {
+        Debug.Log($"Camera Input Status: {allowCameraInput}");
+        if (!allowCameraInput)
+        {
+            Debug.Log("Camera input is currently disabled. Skipping camera update.");
+            return;
+        }
         //Raw delta input
         float horizontalRotation = mouseDelta.x * cameraConfig.mouseSensitivity * Time.deltaTime; //Calculating the horizontal rotation based on mouse input and multiplying by sensitivity to scale it and deltaTime for frame rate independence
         float verticalRotation = mouseDelta.y * cameraConfig.mouseSensitivity * Time.deltaTime; //Calculating the vertical rotation based on mouse input and multiplying by sensitivity to scale it and deltaTime for frame rate independence
@@ -55,5 +63,13 @@ public class PlayerCamera:MonoBehaviour
         //Slerp for smooth rotation 
         transform.parent.rotation = Quaternion.Slerp(transform.parent.rotation, targetBodyRotation, cameraConfig.cameraSmoothing * Time.deltaTime);
         transform.localRotation = Quaternion.Slerp(transform.localRotation, targetCameraRotaion, cameraConfig.cameraSmoothing * Time.deltaTime);
+    }
+
+    public void EnableCamera() {
+        allowCameraInput = true;
+    }
+
+    public void DisableCamera() { 
+        allowCameraInput = false;
     }
 }

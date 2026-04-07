@@ -141,12 +141,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8c4a1997a4f34e4eb2e77b721c18c79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeyPad
+  currentIndex: 0
   keyPadInputNumber: 000000000000000000000000000000000000000000000000
   codeCombination: 010000000200000003000000040000000500000006000000
+  isLocked: 0
+  isOpen: 0
   doorOpenAngle: 90
   doorCloseAngle: -90
   keyPadPanel: {fileID: 0}
   codeText: {fileID: 1661214388}
+  playerStateMachine: {fileID: 2938989079833630428}
+  _playerMovement: {fileID: 2938989079833630427}
 --- !u!65 &29459235
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -14273,6 +14278,28 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e9bb68d3c7d2d4e44b2c97132ef84951, type: 3}
+--- !u!114 &2938989079833630427 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3900576885500576557, guid: e9bb68d3c7d2d4e44b2c97132ef84951, type: 3}
+  m_PrefabInstance: {fileID: 2938989079833630426}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b35c041479c14c746992e6eed6b8bfd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
+--- !u!114 &2938989079833630428 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8056201653247001479, guid: e9bb68d3c7d2d4e44b2c97132ef84951, type: 3}
+  m_PrefabInstance: {fileID: 2938989079833630426}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a7b6e11c01881948928850d669b0035, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerStateMachine
 --- !u!23 &2942745372069600172
 MeshRenderer:
   m_ObjectHideFlags: 0

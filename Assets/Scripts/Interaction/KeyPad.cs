@@ -1,20 +1,26 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class KeyPad : MonoBehaviour, IInteractable
 {
-    private int currentIndex = 0;
-    public int[] keyPadInputNumber = new int[6];
-    public int[] codeCombination = new int[6]; // Example code combination
-    private bool isLocked;
-    private bool isOpen = false;
-    public float doorOpenAngle = 90f; // Angle to open the safe
-    public float doorCloseAngle = -90f; // Angle to close the safe
-    public GameObject keyPadPanel;
-    public TextMeshProUGUI codeText;
+    [SerializeField] private int currentIndex = 0;
+    [SerializeField] public int[] keyPadInputNumber = new int[6];
+    [SerializeField] public int[] codeCombination = new int[6]; // Example code combination
+    [SerializeField] private bool isLocked;
+    [SerializeField] private bool isOpen = false;
+    [SerializeField] public float doorOpenAngle = 90f; // Angle to open the safe
+    [SerializeField] public float doorCloseAngle = -90f; // Angle to close the safe
+    [SerializeField] public GameObject keyPadPanel;
+    [SerializeField] public TextMeshProUGUI codeText;
+    [SerializeField] public PlayerStateMachine playerStateMachine; // Drag your player in the inspector
+    [SerializeField] public PlayerMovement _playerMovement; // Reference to the PlayerMovement script
+    [SerializeField] private PlayerControls playerControls; // Reference to the PlayerControls script
     public float InteractionRange => 3f; // Set the interaction range for the keypad
     private void Awake()
     {
+        playerControls = new PlayerControls();
+
         if (keyPadPanel == null) {
             keyPadPanel = GameObject.Find("KeyPadPanel");
         }
@@ -34,6 +40,32 @@ public class KeyPad : MonoBehaviour, IInteractable
         return true;
     }
 
+    public void OnEnable()
+    {
+        playerControls.Enable();
+        playerControls.UI.Cancel.performed += OnCancel;
+    }
+
+    public void OnDisable()
+    {
+        playerControls.UI.Cancel.performed -= OnCancel;
+        playerControls.Disable();
+    }
+
+    public void OnCancel(InputAction.CallbackContext context) {
+
+        if (keyPadPanel != null && keyPadPanel.activeSelf) {
+            CloseKeyPad();
+        }
+    }
+    public void CloseKeyPad() {
+        if (keyPadPanel != null) {
+            keyPadPanel.SetActive(false);
+            playerStateMachine._stateMachine.ChangeState(playerStateMachine.groundedState);
+            CursorUtility.LockAndHideCursor();
+            ResetInput();
+        }
+    }
     public void Interact() {
         if (isLocked) {
             ShowKeypad();
@@ -52,8 +84,18 @@ public class KeyPad : MonoBehaviour, IInteractable
 
     private void UnlockSafe() {
         isLocked = false;
+        CloseKeyPad();
         if (keyPadPanel != null) {
             keyPadPanel.SetActive(false); // Hide the keypad panel after unlocking
+            if (playerStateMachine != null) {
+                if (_playerMovement.moveInput == Vector2.zero)
+                {
+                    playerStateMachine._stateMachine.ChangeState(playerStateMachine.groundedState);
+                }
+                else {
+                    playerStateMachine._stateMachine.ChangeState(playerStateMachine.walkingState);
+                }
+            }
         }
         StartCoroutine(OpenSafe(doorOpenAngle)); // Open the safe immediately after unlocking
         isOpen = true;
@@ -100,6 +142,10 @@ public class KeyPad : MonoBehaviour, IInteractable
             keyPadPanel.SetActive(true); // Show the keypad panel
             CursorUtility.UnlockAndShowCursor();
             ResetInput();
+            playerStateMachine._stateMachine.ChangeState(playerStateMachine.interactionState);
+
+            if (playerStateMachine != null)
+                playerStateMachine._stateMachine.ChangeState(playerStateMachine.interactionState);
         }
         else {
             CursorUtility.LockAndHideCursor();
@@ -128,7 +174,6 @@ public class KeyPad : MonoBehaviour, IInteractable
     public void onClearPressed() {
         ResetInput();
     }
-
     private System.Collections.IEnumerator OpenSafe(float angle)
     {
         Quaternion startingRotation = transform.rotation;

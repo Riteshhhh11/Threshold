@@ -25,6 +25,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] public bool isSprinting;
     [SerializeField] private Vector3 horizontalVelocity; //will hold current smooth horizontal velocity
     [SerializeField] private Vector3 horizontalVelocityRef; //will hold the current vertical velocity 
+    [SerializeField] private bool allowPlayerInput;
 
     private void Awake()
     {
@@ -66,6 +67,9 @@ public class PlayerMovement : MonoBehaviour
     }
     public void Update()
     {
+        if (!allowPlayerInput) {
+            return;
+        }
         GroundCheck();
         CeilingCheck();
         HandleJump();
@@ -135,6 +139,14 @@ public class PlayerMovement : MonoBehaviour
         }
     }
     // For visualization and debugging purposes only.
+
+    public void DisabledInput() {
+        allowPlayerInput = false;
+    }
+
+    public void EnableInput() {
+        allowPlayerInput = true;
+    }
     private void OnDrawGizmos()
     {
         if (playerConfig != null && groundSpherePosition != null && ceilingSpherePosition != null) {
