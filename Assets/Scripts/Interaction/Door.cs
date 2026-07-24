@@ -14,6 +14,7 @@ public class Door : MonoBehaviour, IInteractable
 
     public bool isOpen = false;
     public bool isLocked;
+    private Coroutine currentCoroutine;
 
     public float InteractionRange => interactionRange;
 
@@ -34,37 +35,24 @@ public class Door : MonoBehaviour, IInteractable
         if (!isLocked) {
             return true;
         }
-        Transform playerRoot = GetPlayerRoot();
-        return playerRoot != null && playerRoot.Find(requiredKeyName) != null;
+        return InventoryManager.Instance.HasKey(requiredKeyName);
     }
 
-    public Transform GetPlayerRoot() {
-        if (PlayerInteraction.Instance != null) {
-            return PlayerInteraction.Instance.transform.root;
-        }
-        GameObject playerObject = GameObject.FindWithTag("Player");
-        return playerObject != null ? playerObject.transform : null;
-    }
 
     public void TryUnlockDoor() {
-        Transform playerRoot = GetPlayerRoot();
-        if(playerRoot == null){
-            return;
-        }
-        if (playerRoot.Find(requiredKeyName) != null)
-        {
+        if (InventoryManager.Instance.HasKey(requiredKeyName)) {
             isLocked = false;
             Debug.Log($"Door unlocked with {requiredKeyName}");
-            Transform KeyHolder = playerRoot.Find(requiredKeyName);
-            if (KeyHolder != null)
-            {
-                Destroy(KeyHolder.gameObject);
+
+            InventoryManager.Instance.RemoveKey(requiredKeyName);
+            if (currentCoroutine != null) {
+                StopCoroutine(currentCoroutine);
             }
-            StartCoroutine(RotateDoor(doorOpenAngle));
+            currentCoroutine = StartCoroutine(RotateDoor(doorOpenAngle));
             isOpen = true;
         }
         else {
-            Debug.Log($"Player does not have the required key: {requiredKeyName}");
+            Debug.Log($"Door is locked. You need {requiredKeyName} to unlock it.");
         }
     }
     public void Interact()
@@ -73,14 +61,16 @@ public class Door : MonoBehaviour, IInteractable
             TryUnlockDoor();
             return;
         }
-
+        if (currentCoroutine != null) {
+            StopCoroutine(currentCoroutine);
+        }
         if (isOpen)
         {
-            StartCoroutine(RotateDoor(doorCloseAngle));
+            currentCoroutine = StartCoroutine(RotateDoor(doorCloseAngle));
         }
         else
         {
-            StartCoroutine(RotateDoor(doorOpenAngle));
+            currentCoroutine = StartCoroutine(RotateDoor(doorOpenAngle));
         }
         isOpen = !isOpen; // Toggle the door state after starting the rotation
     }

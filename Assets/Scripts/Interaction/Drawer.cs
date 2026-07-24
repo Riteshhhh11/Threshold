@@ -10,6 +10,7 @@ public class Drawer:MonoBehaviour, IInteractable
     private Vector3 closedPosition;
     private Vector3 openPosition;
     public bool isOpen = false;
+    private Coroutine currentCoroutine;
 
     public string GetPrompt() {
        return isOpen ? "Close Drawer" : "Open Drawer";
@@ -24,7 +25,11 @@ public class Drawer:MonoBehaviour, IInteractable
     }
     public void Interact() {
        Vector3 targetPosition = isOpen ? closedPosition : openPosition;
-       StartCoroutine(OpenDrawer(targetPosition));
+
+        if (currentCoroutine != null) {
+            StopCoroutine(currentCoroutine);
+        }
+        currentCoroutine = StartCoroutine(OpenDrawer(targetPosition));
        isOpen = !isOpen;
     }
 

@@ -7,6 +7,7 @@ public class PlayerCamera:MonoBehaviour
     [SerializeField] PlayerControls playerControls;
     [SerializeField] private Vector2 mouseDelta;
     [SerializeField] public float currentPitch;
+    [SerializeField] private bool canLook = true;
 
 
     private void Awake()
@@ -29,6 +30,16 @@ public class PlayerCamera:MonoBehaviour
 
     private void lookInput(InputAction.CallbackContext context) {
         mouseDelta = context.ReadValue<Vector2>();
+    }
+
+    public void EnableCamera()
+    {
+        canLook = true;
+    }
+
+    public void DisableCamera()
+    {
+        canLook = false;
     }
 
     private void LateUpdate()

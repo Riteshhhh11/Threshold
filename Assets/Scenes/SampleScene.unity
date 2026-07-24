@@ -24325,6 +24325,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4937352234109357062, guid: c52bc65f45157fc4385a2c4430be6464, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5780445599852799852, guid: c52bc65f45157fc4385a2c4430be6464, type: 3}
       propertyPath: m_Name
       value: MeshBaker_mesh_mesh

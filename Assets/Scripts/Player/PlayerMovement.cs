@@ -25,6 +25,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] public bool isSprinting;
     [SerializeField] private Vector3 horizontalVelocity; //will hold current smooth horizontal velocity
     [SerializeField] private Vector3 horizontalVelocityRef; //will hold the current vertical velocity 
+    [SerializeField] private bool canMove = true;
 
     private void Awake()
     {
@@ -74,6 +75,17 @@ public class PlayerMovement : MonoBehaviour
     {
         PlayerController.Move(velocity * Time.deltaTime);
     }
+    public void DisableMovement() {
+        canMove = false;
+        velocity = Vector3.zero;
+        horizontalVelocity = Vector3.zero;
+        horizontalVelocityRef = Vector3.zero;
+    }
+
+    public void EnableMovement()
+    {
+        canMove = true;
+    }   
     private void FixedUpdate() //for physics calculation on a fixed timestep.
     {
         ApplyGravity();

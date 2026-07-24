@@ -24,7 +24,7 @@ public sealed class PlayerStateMachine : MonoBehaviour
         walkingState = new PlayerWalkingState(sm: _stateMachine, player: _playerMovement, playerStateMachine: this);
     }
 
-    public void Start()
+    public void Start()  
     {
         //TODO: Change to the deafult state when game starts
         _stateMachine.ChangeState(groundedState); 
