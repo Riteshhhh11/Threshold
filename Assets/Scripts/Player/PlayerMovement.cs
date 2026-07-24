@@ -91,6 +91,9 @@ public class PlayerMovement : MonoBehaviour
         ApplyGravity();
     }
     public void HandleMovement(float desiredSpeed) {
+        if (!canMove) {
+            return;
+        }
         Vector3 inputDirection = new Vector3(moveInput.x, 0f, moveInput.y); 
         inputDirection = transform.TransformDirection(inputDirection);
         Vector3 targetHorizontalVelocity = inputDirection * desiredSpeed; //storing the scaled speed from the input into targetHorizontalVelocity (from 0 to 5, 5 is the walking speed).
@@ -127,6 +130,9 @@ public class PlayerMovement : MonoBehaviour
         }
     }
     public void HandleJump() {
+        if (!canMove) {
+            return;
+        }
         if (playerConfig.jumpBufferTimer > 0)
         {
             playerConfig.jumpBufferTimer -= Time.deltaTime;

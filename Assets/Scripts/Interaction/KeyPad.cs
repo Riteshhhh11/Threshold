@@ -1,4 +1,5 @@
 using TMPro;
+using UnityEditor.Networking.PlayerConnection;
 using UnityEngine;
 
 public class KeyPad : MonoBehaviour, IInteractable
@@ -12,6 +13,7 @@ public class KeyPad : MonoBehaviour, IInteractable
     public float doorCloseAngle = -90f; // Angle to close the safe
     public GameObject keyPadPanel;
     public TextMeshProUGUI codeText;
+    private Coroutine currentCoroutine;
     public float InteractionRange => 3f; // Set the interaction range for the keypad
     private void Awake()
     {
@@ -39,23 +41,28 @@ public class KeyPad : MonoBehaviour, IInteractable
             ShowKeypad();
             return;
         }
+        if (currentCoroutine != null) {
+            StopCoroutine(currentCoroutine);
+        }
+
         if (isOpen) {
-            StartCoroutine(OpenSafe(doorCloseAngle));
+            currentCoroutine = StartCoroutine(OpenSafe(doorCloseAngle));
             isOpen = false;
         }
         else
         {
-            StartCoroutine(OpenSafe(doorOpenAngle));
+            currentCoroutine = StartCoroutine(OpenSafe(doorOpenAngle));
             isOpen = true;
         }
     }
 
     private void UnlockSafe() {
         isLocked = false;
-        if (keyPadPanel != null) {
-            keyPadPanel.SetActive(false); // Hide the keypad panel after unlocking
+        HideKeypad();
+        if (currentCoroutine != null) {
+            StopCoroutine(currentCoroutine);
         }
-        StartCoroutine(OpenSafe(doorOpenAngle)); // Open the safe immediately after unlocking
+        currentCoroutine = StartCoroutine(OpenSafe(doorOpenAngle));
         isOpen = true;
     }
     public void OnNumberPressed(int number) { //function to add array on the button pressed
@@ -100,12 +107,40 @@ public class KeyPad : MonoBehaviour, IInteractable
             keyPadPanel.SetActive(true); // Show the keypad panel
             CursorUtility.UnlockAndShowCursor();
             ResetInput();
+
+            PlayerMovement playerMovement = FindAnyObjectByType<PlayerMovement>();
+            if (playerMovement != null) {
+                playerMovement.DisableMovement(); // Disable player movement when the keypad is active
+            }
+
+            PlayerCamera playerCamera = FindAnyObjectByType<PlayerCamera>();
+            if (playerCamera != null) {
+                playerCamera.DisableCamera(); // Disable player camera control when the keypad is active
+            }
         }
         else {
             CursorUtility.LockAndHideCursor();
         }
     }
 
+    public void HideKeypad() {
+        if (keyPadPanel != null) {
+            keyPadPanel.SetActive(false);
+            CursorUtility.LockAndHideCursor();
+
+            PlayerMovement playermovement = FindAnyObjectByType<PlayerMovement>();
+            if (playermovement != null) 
+            {
+                playermovement.EnableMovement(); 
+            }
+
+            PlayerCamera playerCamera = FindAnyObjectByType<PlayerCamera>();
+            if (playerCamera != null)
+            {
+                playerCamera.EnableCamera();
+            }
+        }
+    }
     private void UpdateDisplay()
     {
         if (codeText == null) {

@@ -44,6 +44,9 @@ public class PlayerCamera:MonoBehaviour
 
     private void LateUpdate()
     {
+        if (!canLook) {
+            return;
+        }
         //Raw delta input
         float horizontalRotation = mouseDelta.x * cameraConfig.mouseSensitivity * Time.deltaTime; //Calculating the horizontal rotation based on mouse input and multiplying by sensitivity to scale it and deltaTime for frame rate independence
         float verticalRotation = mouseDelta.y * cameraConfig.mouseSensitivity * Time.deltaTime; //Calculating the vertical rotation based on mouse input and multiplying by sensitivity to scale it and deltaTime for frame rate independence
