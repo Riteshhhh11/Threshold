@@ -14,6 +14,8 @@ public class KeyPad : MonoBehaviour, IInteractable
     public GameObject keyPadPanel;
     public TextMeshProUGUI codeText;
     private Coroutine currentCoroutine;
+    private PlayerMovement cachedPlayerMovement;
+    private PlayerCamera cachedPlayerCamera;
     public float InteractionRange => 3f; // Set the interaction range for the keypad
     private void Awake()
     {
@@ -36,7 +38,24 @@ public class KeyPad : MonoBehaviour, IInteractable
         return true;
     }
 
-    public void Interact() {
+    public void Interact(Transform interactor) {
+        cachedPlayerMovement = interactor.GetComponent<PlayerMovement>();
+        cachedPlayerCamera = interactor.GetComponentInChildren<PlayerCamera>();
+        if (cachedPlayerCamera == null) {
+            Debug.LogWarning("PlayerCamera component not found on the interactor.");
+        }
+        if (cachedPlayerMovement == null) {
+            Debug.LogWarning("PlayerMovement component not found on the interactor.");
+        }
+        if (cachedPlayerMovement != null) {
+            cachedPlayerMovement.DisableMovement();
+            Debug.Log("Player movement disabled");
+        }
+        if (cachedPlayerCamera != null) {
+            cachedPlayerCamera.DisableCamera();
+            Debug.Log("Camera disabled");
+        }
+
         if (isLocked) {
             ShowKeypad();
             return;
@@ -75,14 +94,14 @@ public class KeyPad : MonoBehaviour, IInteractable
 
     public void OnCodeCheck() {
         if (currentIndex < keyPadInputNumber.Length) {
-            Debug.Log("Not enough numbers entered.");
+            //Debug.Log("Not enough numbers entered.");
             return;
         }
         bool isCodeCorrect = CheckCombination(keyPadInputNumber);
         if (isCodeCorrect)
         {
             UnlockSafe();
-            Debug.Log("Safe unlocked!");
+            //Debug.Log("Safe unlocked!");
         }
         else {
             ResetInput();
@@ -107,16 +126,6 @@ public class KeyPad : MonoBehaviour, IInteractable
             keyPadPanel.SetActive(true); // Show the keypad panel
             CursorUtility.UnlockAndShowCursor();
             ResetInput();
-
-            PlayerMovement playerMovement = FindAnyObjectByType<PlayerMovement>();
-            if (playerMovement != null) {
-                playerMovement.DisableMovement(); // Disable player movement when the keypad is active
-            }
-
-            PlayerCamera playerCamera = FindAnyObjectByType<PlayerCamera>();
-            if (playerCamera != null) {
-                playerCamera.DisableCamera(); // Disable player camera control when the keypad is active
-            }
         }
         else {
             CursorUtility.LockAndHideCursor();
@@ -128,16 +137,11 @@ public class KeyPad : MonoBehaviour, IInteractable
             keyPadPanel.SetActive(false);
             CursorUtility.LockAndHideCursor();
 
-            PlayerMovement playermovement = FindAnyObjectByType<PlayerMovement>();
-            if (playermovement != null) 
-            {
-                playermovement.EnableMovement(); 
+            if (cachedPlayerMovement != null) {
+                cachedPlayerMovement.EnableMovement(); // Re-enable player movement when the keypad is hidden
             }
-
-            PlayerCamera playerCamera = FindAnyObjectByType<PlayerCamera>();
-            if (playerCamera != null)
-            {
-                playerCamera.EnableCamera();
+            if (cachedPlayerCamera != null) {
+                cachedPlayerCamera.EnableCamera(); // Re-enable player camera control when the keypad is hidden
             }
         }
     }

@@ -36,7 +36,7 @@ public class PlayerInteraction : MonoBehaviour
     private void OnInteract(InputAction.CallbackContext context)
     {
         if (currentTarget != null) {
-            currentTarget.Interact();
+            currentTarget.Interact(this.transform); //player's transform is passed to the Interact method
         }
        
     }

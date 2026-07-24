@@ -23,8 +23,8 @@ public class Drawer:MonoBehaviour, IInteractable
         closedPosition = transform.localPosition;
         openPosition = closedPosition + slideDirection.normalized * openDistance; //normalize the direction to ensure consistent movement regardless of the original vector's magnitude
     }
-    public void Interact() {
-       Vector3 targetPosition = isOpen ? closedPosition : openPosition;
+    public void Interact(Transform interactor) {
+        Vector3 targetPosition = isOpen ? closedPosition : openPosition;
 
         if (currentCoroutine != null) {
             StopCoroutine(currentCoroutine);

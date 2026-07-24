@@ -55,7 +55,7 @@ public class Door : MonoBehaviour, IInteractable
             Debug.Log($"Door is locked. You need {requiredKeyName} to unlock it.");
         }
     }
-    public void Interact()
+    public void Interact(Transform interactor)
     {
         if (isLocked) {
             TryUnlockDoor();

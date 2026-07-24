@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Key : MonoBehaviour, IInteractable
@@ -9,7 +10,7 @@ public class Key : MonoBehaviour, IInteractable
     public float InteractionRange => 3f;
     public string GetPrompt() => $"Pick up {KeyName}";
     public bool canInteract() => true;
-    public void Interact() {
+    public void Interact(Transform interactor) {
         InventoryManager.Instance.AddKeys(KeyName);
         Destroy(gameObject);
     }
