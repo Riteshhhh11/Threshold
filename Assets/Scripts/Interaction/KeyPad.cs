@@ -14,8 +14,8 @@ public class KeyPad : MonoBehaviour, IInteractable
     public GameObject keyPadPanel;
     public TextMeshProUGUI codeText;
     private Coroutine currentCoroutine;
-    private PlayerMovement cachedPlayerMovement;
-    private PlayerCamera cachedPlayerCamera;
+    private PlayerStateMachine playerStateMachine;
+    
     public float InteractionRange => 3f; // Set the interaction range for the keypad
     private void Awake()
     {
@@ -39,24 +39,14 @@ public class KeyPad : MonoBehaviour, IInteractable
     }
 
     public void Interact(Transform interactor) {
-        cachedPlayerMovement = interactor.GetComponent<PlayerMovement>();
-        cachedPlayerCamera = interactor.GetComponentInChildren<PlayerCamera>();
-        if (cachedPlayerCamera == null) {
-            Debug.LogWarning("PlayerCamera component not found on the interactor.");
+        if (PlayerInteraction.Instance != null) {
+            playerStateMachine = PlayerInteraction.Instance.GetComponent<PlayerStateMachine>();
         }
-        if (cachedPlayerMovement == null) {
-            Debug.LogWarning("PlayerMovement component not found on the interactor.");
-        }
-        if (cachedPlayerMovement != null) {
-            cachedPlayerMovement.DisableMovement();
-            Debug.Log("Player movement disabled");
-        }
-        if (cachedPlayerCamera != null) {
-            cachedPlayerCamera.DisableCamera();
-            Debug.Log("Camera disabled");
-        }
-
+       
         if (isLocked) {
+            if (playerStateMachine != null) {
+                playerStateMachine.ChangeState(playerStateMachine.interactionState);
+            }
             ShowKeypad();
             return;
         }
@@ -124,25 +114,24 @@ public class KeyPad : MonoBehaviour, IInteractable
         if (keyPadPanel != null)
         {
             keyPadPanel.SetActive(true); // Show the keypad panel
-            CursorUtility.UnlockAndShowCursor();
+            //CursorUtility.UnlockAndShowCursor();
             ResetInput();
         }
-        else {
-            CursorUtility.LockAndHideCursor();
-        }
+        //else {
+        //    CursorUtility.LockAndHideCursor();
+        //}
     }
-
     public void HideKeypad() {
         if (keyPadPanel != null) {
             keyPadPanel.SetActive(false);
-            CursorUtility.LockAndHideCursor();
-
-            if (cachedPlayerMovement != null) {
-                cachedPlayerMovement.EnableMovement(); // Re-enable player movement when the keypad is hidden
+            if (playerStateMachine != null)
+            {
+                playerStateMachine.ChangeState(playerStateMachine.groundedState);
+                Debug.Log("Player state changed to grounded state.");
+                playerStateMachine = null;
+                Debug.Log("Player state machine reference cleared.");
             }
-            if (cachedPlayerCamera != null) {
-                cachedPlayerCamera.EnableCamera(); // Re-enable player camera control when the keypad is hidden
-            }
+            //CursorUtility.LockAndHideCursor();
         }
     }
     private void UpdateDisplay()
